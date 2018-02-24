@@ -96,35 +96,33 @@ public class HTTPRequest {
 	 */
 	public String getUrl(String path) throws HTTPException {
 		String[] nope = { "NOPE" };
-		String[] redirect = { "main" };
+	//	String[] redirect = { "main" };
 
 		if (path == null)
 			throw new HTTPException(StatusCode.BadRequest);
 
 		String allPath = Server.contentPath + path;
 
+		if (allPath.contains("images//homer"))
+			throw new HTTPException (StatusCode.Found);
+		
 		if (new File(allPath).isDirectory()) {
 			if (allPath.charAt(allPath.length() - 1) != '/') {
 				throw new HTTPException(StatusCode.BadRequest);
 			}
+	
+		String temp = allPath + "index.htm";
+		if (new File(temp).exists())
+			return temp;
+		temp = allPath + "index.html";
+		if (new File(temp).exists())
+			return temp;
 			
-			if (allPath.contains("images//homer")){
-				throw new HTTPException (StatusCode.Found);
-			}
-			else{
-				String temp = allPath + "index.htm";
-				if (new File(temp).exists())
-					return temp;
-				temp = allPath + "index.html";
-				if (new File(temp).exists())
-					return temp;
-			}
 		}
 				
 		if (new File(allPath).exists()) {
 			return allPath;
-		}
-
+}
 		for (String str : nope) {
 			if (path.contains(str)) {
 				throw new HTTPException(403);
@@ -137,7 +135,6 @@ public class HTTPRequest {
 		}*/
 		throw new HTTPException(StatusCode.NotFound);
 	}
-
 	/*
 	 * Returns the method used for request as enum RequestType
 	 */
